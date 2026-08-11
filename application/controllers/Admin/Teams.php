@@ -250,4 +250,34 @@ class Teams extends MY_Controller
 
         redirect('admin/teams');
     }
+
+    public function move_up($id)
+    {
+        $team = $this->Team_model->get_by_id($id);
+
+        if (!$team) {
+            show_404();
+        }
+
+        $this->Team_model->move_up($id);
+
+        $this->session->set_flashdata('success', 'Team Member urutan dipindahkan ke atas.');
+
+        redirect('admin/teams');
+    }
+
+    public function move_down($id)
+    {
+        $team = $this->Team_model->get_by_id($id);
+
+        if (!$team) {
+            show_404();
+        }
+
+        $this->Team_model->move_down($id);
+
+        $this->session->set_flashdata('success', 'Team Member urutan dipindahkan ke bawah.');
+
+        redirect('admin/teams');
+    }
 }

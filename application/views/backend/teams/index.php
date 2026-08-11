@@ -17,7 +17,7 @@
                     <th>Name</th>
                     <th>Position</th>
                     <th>LinkedIn</th>
-                    <th width="15%" class="text-center">Action</th>
+                    <th width="20%" class="text-center">Action</th>
                 </tr>
             </thead>
 
@@ -25,6 +25,7 @@
 
                 <?php if (!empty($teams)): ?>
                     <?php $no = 1; ?>
+                    <?php $total = count($teams); ?>
 
                     <?php foreach ($teams as $team): ?>
 
@@ -47,6 +48,34 @@
                             </td>
 
                             <td class="text-center">
+
+                                <?php if ($team['sort_order'] > 1): ?>
+                                    <a href="<?= site_url('admin/teams/move_up/' . $team['id']) ?>"
+                                        class="btn btn-info btn-sm"
+                                        title="Move Up">
+
+                                        <i class="fas fa-arrow-up"></i>
+
+                                    </a>
+                                <?php else: ?>
+                                    <button class="btn btn-info btn-sm" disabled title="Already at top">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                <?php endif; ?>
+
+                                <?php if ($team['sort_order'] < $total): ?>
+                                    <a href="<?= site_url('admin/teams/move_down/' . $team['id']) ?>"
+                                        class="btn btn-info btn-sm"
+                                        title="Move Down">
+
+                                        <i class="fas fa-arrow-down"></i>
+
+                                    </a>
+                                <?php else: ?>
+                                    <button class="btn btn-info btn-sm" disabled title="Already at bottom">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                <?php endif; ?>
 
                                 <a href="<?= site_url('admin/teams/edit/' . $team['id']) ?>"
                                     class="btn btn-warning btn-sm">
