@@ -224,6 +224,9 @@ class Teams extends MY_Controller
 
             $this->Team_model->delete($id);
 
+            // Reorder sort_order setelah delete
+            $this->Team_model->reorder_sort_order();
+
             if ($this->db->trans_status() === FALSE) {
                 throw new Exception('Gagal menghapus Team Member.');
             }

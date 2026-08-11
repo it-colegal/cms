@@ -205,4 +205,30 @@ class Team_model extends CI_Model
 
         return $this->db->trans_status();
     }
+
+    /**
+     * Reorder sort_order setelah ada yang dihapus.
+     * Memastikan urutan rapi tanpa gap.
+     *
+     * @return void
+     */
+    public function reorder_sort_order()
+    {
+        $teams = $this->db
+            ->select('id')
+            ->from($this->table)
+            ->order_by('sort_order', 'ASC')
+            ->get()
+            ->result_array();
+
+        $this->db->trans_start();
+
+        foreach ($teams as $index => $team) {
+            $this->db
+                ->where('id', $team['id'])
+                ->update($this->table, ['sort_order' => $index + 1]);
+        }
+
+        $this->db->trans_complete();
+    }
 }
