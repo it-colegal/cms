@@ -17,7 +17,7 @@ if (!function_exists('renderDesktopMenu')) {
         foreach ($menus as $menu) {
 
             $title = html_escape($menu['title']);
-            $url = html_escape($menu['url']);
+            $url = $menu['url']; // Already escaped and base_url applied by Menu_model
             $target = !empty($menu['target']) ? html_escape($menu['target']) : '_self';
             $children = !empty($menu['children']);
 
@@ -26,7 +26,7 @@ if (!function_exists('renderDesktopMenu')) {
                 echo '<a href="' . $url . '" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" target="' . $target . '">' . $title . '</a>';
                 echo '<ul class="dropdown-menu">';
                 foreach ($menu['children'] as $child) {
-                    echo '<li><a class="dropdown-item" href="' . html_escape($child['url']) . '" target="' . html_escape($child['target']) . '">' . html_escape($child['title']) . '</a></li>';
+                    echo '<li><a class="dropdown-item" href="' . $child['url'] . '" target="' . html_escape($child['target']) . '">' . html_escape($child['title']) . '</a></li>';
                 }
                 echo '</ul>';
                 echo '</div>';
@@ -42,7 +42,7 @@ if (!function_exists('renderMobileMenu')) {
     {
         foreach ($menus as $menu) {
             $title = html_escape(str_repeat('- ', $level) . $menu['title']);
-            $url = html_escape($menu['url']);
+            $url = $menu['url']; // Already escaped and base_url applied by Menu_model
             $target = !empty($menu['target']) ? html_escape($menu['target']) : '_self';
             $padding = ($level == 0) ? 0 : (20 + (($level - 1) * 24));
 
