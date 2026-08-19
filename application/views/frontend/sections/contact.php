@@ -305,30 +305,15 @@ if (empty($site))
 </section>
 
 <style>
-    /* Enhanced Form Styling */
+    /* Form Styling - Default Colors */
     #contactForm .form-control,
     #contactForm .form-select {
-        background: rgba(255, 255, 255, 0.7);
-        border: 1px solid rgba(var(--pt-rgb), 0.15);
-        color: var(--tx);
         font-size: 1rem;
         padding: 12px 16px;
         transition: all 0.3s ease;
     }
 
-    #contactForm .form-control::placeholder {
-        color: rgba(var(--tx), 0.5);
-    }
-
-    #contactForm .form-control:focus,
-    #contactForm .form-select:focus {
-        background: rgba(255, 255, 255, 0.9);
-        border-color: var(--pt);
-        box-shadow: 0 0 0 3px rgba(var(--pt-rgb), 0.1);
-    }
-
     #contactForm .form-label {
-        color: var(--tx);
         margin-bottom: 0.5rem;
     }
 
