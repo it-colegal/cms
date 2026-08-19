@@ -5,6 +5,13 @@ if (empty($site))
 {
     return;
 }
+
+// Load models untuk ambil data Layanan dan Produk
+$this->load->model('Service_model');
+$this->load->model('Product_model');
+
+$services = $this->Service_model->get_active_services();
+$products = $this->Product_model->get_active_products();
 ?>
 
 <section id="contact" class="section-padding position-relative overflow-hidden">
@@ -209,7 +216,7 @@ if (empty($site))
                             </div>
                         </div>
 
-                        <!-- Subject -->
+                        <!-- Subject - Dynamic from Services & Products -->
                         <div class="mb-3">
                             <div class="form-group">
                                 <label for="subject" class="form-label small fw-semibold d-flex align-items-center gap-2 mb-2">
@@ -222,12 +229,40 @@ if (empty($site))
                                     class="form-select form-select-lg rounded-2"
                                     required>
                                     <option value="">-- Pilih Perihal --</option>
-                                    <option value="Konsultasi Legalitas Hukum">Konsultasi Legalitas Hukum</option>
-                                    <option value="Konsultasi Pajak & Akuntansi">Konsultasi Pajak & Akuntansi</option>
-                                    <option value="Virtual Working Space">Virtual Working Space</option>
-                                    <option value="Konsultasi IT">Konsultasi IT</option>
-                                    <option value="Pertanyaan Umum">Pertanyaan Umum</option>
-                                    <option value="Lainnya">Lainnya</option>
+
+                                    <!-- Services Group -->
+                                    <?php if (!empty($services)) : ?>
+
+                                        <optgroup label="Layanan">
+                                            <?php foreach ($services as $service) : ?>
+                                                <option value="<?php echo html_escape($service['name']); ?>">
+                                                    <?php echo html_escape($service['name']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </optgroup>
+
+                                    <?php endif; ?>
+
+                                    <!-- Products Group -->
+                                    <?php if (!empty($products)) : ?>
+
+                                        <optgroup label="Produk">
+                                            <?php foreach ($products as $product) : ?>
+                                                <option value="<?php echo html_escape($product['name']); ?>">
+                                                    <?php echo html_escape($product['name']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </optgroup>
+
+                                    <?php endif; ?>
+
+                                    <!-- Other Options -->
+                                    <optgroup label="Lainnya">
+                                        <option value="Pertanyaan Umum">Pertanyaan Umum</option>
+                                        <option value="Keluhan/Masalah">Keluhan/Masalah</option>
+                                        <option value="Kemitraan">Kemitraan</option>
+                                    </optgroup>
+
                                 </select>
                             </div>
                         </div>
