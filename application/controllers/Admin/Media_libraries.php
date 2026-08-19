@@ -232,9 +232,11 @@ class Media_libraries extends MY_Controller
 
                 <!-- Card Body -->
                 <div class="card-body pb-2">
-                    <p class="card-title mb-3" title="' . $filename . '" style="font-size: 13px; font-weight: 600; margin-bottom: 8px; word-break: break-word; line-height: 1.3;">
+                    <p class="card-title mb-2" title="' . $filename . '" style="font-size: 13px; font-weight: 600; word-break: break-word; line-height: 1.3;">
                         ' . $display_name . '
                     </p>
+                    
+                    <hr style="margin: 8px 0;">
                     
                     <div class="small text-muted" style="line-height: 1.8;">
                         <div class="mb-1">
