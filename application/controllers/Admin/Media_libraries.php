@@ -184,11 +184,15 @@ class Media_libraries extends MY_Controller
     {
         $is_image = strpos($media['mime_type'], 'image/') === 0;
         $file_size = $this->_format_bytes($media['file_size']);
+        $filename = html_escape($media['original_filename']);
+        // Truncate filename for display
+        $display_name = strlen($filename) > 30 ? substr($filename, 0, 27) . '...' : $filename;
 
         $html = '
-        <div class="col-md-4 col-sm-6 mb-4">
-            <div class="card h-100 shadow-sm cursor-pointer media-card" data-media-id="' . $media['id'] . '">
-                <div class="card-img-top" style="height: 250px; overflow: hidden; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm media-card" data-media-id="' . $media['id'] . '">
+                <!-- Image Preview Area -->
+                <div class="card-img-top position-relative" style="height: 200px; overflow: hidden; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); display: flex; align-items: center; justify-content: center;">
         ';
 
         if ($is_image) {
@@ -199,53 +203,61 @@ class Media_libraries extends MY_Controller
                 $data_uri = 'data:' . $media['mime_type'] . ';base64,' . $file_content_base64;
 
                 $html .= '
-                        <img src="' . $data_uri . '" alt="' . html_escape($media['original_filename']) . '" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="' . $data_uri . '" alt="' . $filename . '" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
                 ';
             } else {
                 $icon = $this->_get_file_icon($media['mime_type']);
                 $html .= '
-                        <div class="text-center">
-                            <div style="font-size: 48px; color: #999; margin-bottom: 10px;">
-                                ' . $icon . '
-                            </div>
-                            <small class="text-muted d-block">' . strtoupper(explode('/', $media['mime_type'])[1] ?? 'File') . '</small>
-                        </div>
+                    <div class="text-center text-muted">
+                        <div style="font-size: 56px; margin-bottom: 8px;">' . $icon . '</div>
+                        <small>Image</small>
+                    </div>
                 ';
             }
         } else {
             // File icon
             $icon = $this->_get_file_icon($media['mime_type']);
+            $file_type = strtoupper(explode('/', $media['mime_type'])[1] ?? 'File');
 
             $html .= '
-                    <div class="text-center">
-                        <div style="font-size: 48px; color: #999; margin-bottom: 10px;">
-                            ' . $icon . '
-                        </div>
-                        <small class="text-muted d-block">' . strtoupper(explode('/', $media['mime_type'])[1] ?? 'File') . '</small>
+                    <div class="text-center text-muted w-100">
+                        <div style="font-size: 56px; margin-bottom: 8px;">' . $icon . '</div>
+                        <small class="d-block">' . $file_type . '</small>
                     </div>
             ';
         }
 
         $html .= '
                 </div>
-                <div class="card-body">
-                    <p class="card-title mb-2" style="font-size: 14px; word-break: break-word; line-height: 1.4;">
-                        ' . html_escape($media['original_filename']) . '
+
+                <!-- Card Body -->
+                <div class="card-body pb-2">
+                    <p class="card-title mb-2" title="' . $filename . '" style="font-size: 13px; font-weight: 600; margin-bottom: 8px; word-break: break-word; line-height: 1.3;">
+                        ' . $display_name . '
                     </p>
-                    <small class="text-muted d-block">
-                        <i class="fas fa-file"></i> ' . $file_size . '
-                    </small>
-                    <small class="text-muted d-block">
-                        <i class="fas fa-download"></i> Used ' . $media['used_count'] . 'x
-                    </small>
+                    
+                    <div class="small text-muted" style="line-height: 1.6;">
+                        <div class="d-flex align-items-center mb-1">
+                            <i class="fas fa-file-alt me-2" style="width: 16px;"></i>
+                            <span>' . $file_size . '</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-download me-2" style="width: 16px;"></i>
+                            <span>Used ' . $media['used_count'] . 'x</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-footer bg-white border-top">
-                    <button class="btn btn-sm btn-primary btn-preview w-100 mb-2" data-media-id="' . $media['id'] . '">
-                        <i class="fas fa-eye"></i> Preview
-                    </button>
-                    <a href="' . site_url('admin/media_libraries/download/' . $media['id']) . '" class="btn btn-sm btn-secondary w-100">
-                        <i class="fas fa-download"></i> Download
-                    </a>
+
+                <!-- Card Footer with Actions -->
+                <div class="card-footer bg-light border-top pt-2 pb-2">
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-preview flex-fill" data-media-id="' . $media['id'] . '" style="font-size: 12px;">
+                            <i class="fas fa-eye"></i> Preview
+                        </button>
+                        <a href="' . site_url('admin/media_libraries/download/' . $media['id']) . '" class="btn btn-sm btn-outline-secondary flex-fill" style="font-size: 12px;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

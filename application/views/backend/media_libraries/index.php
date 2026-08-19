@@ -9,7 +9,7 @@
             <div class="row mb-4">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Search Media</label>
+                        <label for="search-input" class="form-label fw-600">Search Media</label>
                         <input type="text"
                                id="search-input"
                                class="form-control"
@@ -20,8 +20,8 @@
                 </div>
                 <div class="col-md-6">
                     <div class="alert alert-info mb-0 mt-4">
-                        <i class="fas fa-info-circle"></i>
-                        Total: <strong id="total-media"><?= $total_media ?></strong> media file(s)
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Total:</strong> <span id="total-media"><?= $total_media ?></span> media file(s)
                     </div>
                 </div>
             </div>
@@ -32,21 +32,23 @@
             </div>
 
             <!-- Pagination -->
-            <div class="row mt-5">
-                <div class="col-12">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center" id="pagination-container">
-                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                                <li class="page-item <?= ($i === $current_page) ? 'active' : '' ?>">
-                                    <a class="page-link pagination-link" href="#" data-page="<?= $i ?>">
-                                        <?= $i ?>
-                                    </a>
-                                </li>
-                            <?php endfor; ?>
-                        </ul>
-                    </nav>
+            <?php if ($total_pages > 1): ?>
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center" id="pagination-container">
+                                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                    <li class="page-item <?= ($i === $current_page) ? 'active' : '' ?>">
+                                        <a class="page-link pagination-link" href="#" data-page="<?= $i ?>">
+                                            <?= $i ?>
+                                        </a>
+                                    </li>
+                                <?php endfor; ?>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
-            </div>
+            <?php endif; ?>
 
         </div>
 
@@ -59,21 +61,19 @@
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
 
-            <div class="modal-header">
+            <div class="modal-header border-bottom">
                 <h5 class="modal-title" id="previewModalLabel">Media Preview</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body" id="previewModalBody">
+            <div class="modal-body" id="previewModalBody" style="max-height: 70vh; overflow-y: auto;">
                 <!-- Content loaded via AJAX -->
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <a id="downloadBtn" href="#" class="btn btn-primary" download>
-                    <i class="fas fa-download"></i> Download
+                    <i class="fas fa-download me-2"></i> Download
                 </a>
             </div>
 
@@ -188,41 +188,81 @@ $(function () {
 
     // Display preview in modal
     function displayPreview(data) {
-        let html = '<div class="text-center">';
+        let html = '';
 
+        // Preview section
+        html += '<div class="mb-4">';
+        
         if (data.is_image) {
-            // Image preview
-            html += '<img src="' + data.data_uri + '" alt="' + data.original_filename + '" style="max-width: 100%; max-height: 600px; object-fit: contain;">';
+            html += '<div style="text-align: center; margin-bottom: 20px;">';
+            html += '<img src="' + data.data_uri + '" alt="' + data.original_filename + '" class="img-fluid" style="max-width: 100%; max-height: 500px; object-fit: contain;">';
+            html += '</div>';
         } else if (data.is_pdf) {
-            // PDF preview
-            html += '<embed src="' + data.data_uri + '" type="application/pdf" width="100%" height="600px">';
+            html += '<embed src="' + data.data_uri + '" type="application/pdf" width="100%" height="500px">';
         } else {
-            // Other files - show icon and info
-            html += '<div style="padding: 50px; color: #999;">';
-            html += '<i class="fas fa-file" style="font-size: 64px; margin-bottom: 20px; display: block;"></i>';
-            html += '<p>Preview not available for this file type</p>';
-            html += '<p><strong>' + data.mime_type + '</strong></p>';
+            html += '<div style="padding: 60px; text-align: center; background: #f8f9fa; border-radius: 8px;">';
+            html += '<i class="fas fa-file" style="font-size: 80px; color: #ccc; display: block; margin-bottom: 20px;"></i>';
+            html += '<p class="text-muted mb-0">Preview not available for this file type</p>';
+            html += '<small class="text-muted d-block mt-2">' + data.mime_type + '</small>';
             html += '</div>';
         }
 
         html += '</div>';
+        html += '<hr class="my-3">';
 
-        html += '<hr>';
-
-        html += '<div class="row mt-3">';
-        html += '<div class="col-md-6">';
-        html += '<strong>Filename:</strong> ' + data.original_filename + '<br>';
-        html += '<strong>File Size:</strong> ' + data.file_size + '<br>';
-        html += '<strong>MIME Type:</strong> ' + data.mime_type + '<br>';
+        // File information section
+        html += '<div class="file-info-section">';
+        html += '<h6 class="fw-600 mb-3">File Information</h6>';
+        
+        html += '<div class="row">';
+        
+        // Left column
+        html += '<div class="col-md-6 mb-3">';
+        html += '<div class="mb-2">';
+        html += '<small class="text-muted d-block">Filename</small>';
+        html += '<strong>' + data.original_filename + '</strong>';
+        html += '</div>';
+        
+        html += '<div class="mb-2">';
+        html += '<small class="text-muted d-block">File Size</small>';
+        html += '<strong>' + data.file_size + '</strong>';
+        html += '</div>';
+        
+        html += '<div class="mb-2">';
+        html += '<small class="text-muted d-block">MIME Type</small>';
+        html += '<strong><code style="background: #f0f0f0; padding: 4px 8px; border-radius: 3px;">' + data.mime_type + '</code></strong>';
+        html += '</div>';
+        html += '</div>';
+        
+        // Right column
+        html += '<div class="col-md-6 mb-3">';
+        
         if (data.width && data.height) {
-            html += '<strong>Dimensions:</strong> ' + data.width + ' x ' + data.height + ' px<br>';
+            html += '<div class="mb-2">';
+            html += '<small class="text-muted d-block">Dimensions</small>';
+            html += '<strong>' + data.width + ' x ' + data.height + ' px</strong>';
+            html += '</div>';
         }
+        
+        html += '<div class="mb-2">';
+        html += '<small class="text-muted d-block">Upload Date</small>';
+        html += '<strong>' + data.created_at + '</strong>';
         html += '</div>';
-        html += '<div class="col-md-6">';
-        html += '<strong>Upload Date:</strong> ' + data.created_at + '<br>';
-        html += '<strong>Used Count:</strong> ' + data.used_count + ' time(s)<br>';
-        html += '<strong>UUID:</strong> <small>' + data.uuid + '</small><br>';
+        
+        html += '<div class="mb-2">';
+        html += '<small class="text-muted d-block">Used Count</small>';
+        html += '<strong>' + data.used_count + ' time(s)</strong>';
         html += '</div>';
+        html += '</div>';
+        
+        html += '</div>';
+        
+        // UUID section
+        html += '<div class="mt-3 pt-3 border-top">';
+        html += '<small class="text-muted d-block mb-1">UUID</small>';
+        html += '<code style="background: #f0f0f0; padding: 6px 8px; border-radius: 3px; font-size: 11px; word-break: break-all;">' + data.uuid + '</code>';
+        html += '</div>';
+        
         html += '</div>';
 
         $('#previewModalBody').html(html);
@@ -241,16 +281,42 @@ $(function () {
 
 <style>
 .media-card {
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
 }
 
 .media-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+    border-color: #d0d0d0;
 }
 
-.cursor-pointer {
-    cursor: pointer;
+.btn-group .btn-sm {
+    border-radius: 0;
+}
+
+.btn-group .btn-sm:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.btn-group .btn-sm:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+.card-footer .btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    border-radius: 4px;
+}
+
+.file-info-section {
+    font-size: 14px;
+}
+
+.file-info-section code {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
 }
 
 .pagination-link {
