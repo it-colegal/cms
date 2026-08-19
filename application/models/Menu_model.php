@@ -52,6 +52,26 @@ class Menu_model extends CI_Model
             ->delete($this->table);
     }
 
+    public function reorder_display_order()
+    {
+        $menus = $this->db
+            ->select('id')
+            ->from($this->table)
+            ->order_by('display_order', 'ASC')
+            ->get()
+            ->result_array();
+
+        $this->db->trans_start();
+
+        foreach ($menus as $index => $menu) {
+            $this->db
+                ->where('id', $menu['id'])
+                ->update($this->table, ['display_order' => $index + 1]);
+        }
+
+        $this->db->trans_complete();
+    }
+
     public function toggle_status($id)
     {
         $menu = $this->get_by_id($id);

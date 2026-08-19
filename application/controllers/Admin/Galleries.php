@@ -246,6 +246,9 @@ class Galleries extends MY_Controller
 
             $this->Gallery_model->delete($id);
 
+            // Reorder sort_order setelah delete
+            $this->Gallery_model->reorder_sort_order();
+
             if ($this->db->trans_status() === FALSE) {
 
                 throw new Exception(

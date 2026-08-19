@@ -228,6 +228,9 @@ class Menus extends MY_Controller
 
             $this->Menu_model->delete($id);
 
+            // Reorder display_order setelah delete
+            $this->Menu_model->reorder_display_order();
+
             if ($this->db->trans_status() === FALSE) {
                 throw new Exception('Gagal menghapus Menu.');
             }

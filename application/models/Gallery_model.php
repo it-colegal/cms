@@ -75,6 +75,26 @@ class Gallery_model extends CI_Model
             ->delete($this->table);
     }
 
+    public function reorder_sort_order()
+    {
+        $galleries = $this->db
+            ->select('id')
+            ->from($this->table)
+            ->order_by('sort_order', 'ASC')
+            ->get()
+            ->result_array();
+
+        $this->db->trans_start();
+
+        foreach ($galleries as $index => $gallery) {
+            $this->db
+                ->where('id', $gallery['id'])
+                ->update($this->table, ['sort_order' => $index + 1]);
+        }
+
+        $this->db->trans_complete();
+    }
+
     public function move_up($id)
     {
         $current = $this->get_by_id($id);

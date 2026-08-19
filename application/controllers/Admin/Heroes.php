@@ -200,6 +200,9 @@ class Heroes extends MY_Controller
 
             $this->Hero_model->delete($id);
 
+            // Reorder display_order setelah delete
+            $this->Hero_model->reorder_display_order();
+
             if ($this->db->trans_status() === FALSE) {
                 throw new Exception('Gagal menghapus Hero.');
             }

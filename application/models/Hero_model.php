@@ -120,6 +120,26 @@ class Hero_model extends CI_Model
             ->delete($this->table);
     }
 
+    public function reorder_display_order()
+    {
+        $heroes = $this->db
+            ->select('id')
+            ->from($this->table)
+            ->order_by('display_order', 'ASC')
+            ->get()
+            ->result_array();
+
+        $this->db->trans_start();
+
+        foreach ($heroes as $index => $hero) {
+            $this->db
+                ->where('id', $hero['id'])
+                ->update($this->table, ['display_order' => $index + 1]);
+        }
+
+        $this->db->trans_complete();
+    }
+
     public function toggle_status($id)
     {
         $hero = $this->get_by_id($id);
