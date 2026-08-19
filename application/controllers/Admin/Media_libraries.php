@@ -232,18 +232,16 @@ class Media_libraries extends MY_Controller
 
                 <!-- Card Body -->
                 <div class="card-body pb-2">
-                    <p class="card-title mb-2" title="' . $filename . '" style="font-size: 13px; font-weight: 600; margin-bottom: 8px; word-break: break-word; line-height: 1.3;">
+                    <p class="card-title mb-3" title="' . $filename . '" style="font-size: 13px; font-weight: 600; margin-bottom: 8px; word-break: break-word; line-height: 1.3;">
                         ' . $display_name . '
                     </p>
                     
-                    <div class="small text-muted" style="line-height: 1.6;">
-                        <div class="d-flex align-items-center mb-1">
-                            <i class="fas fa-file-alt me-2" style="width: 16px;"></i>
-                            <span>' . $file_size . '</span>
+                    <div class="small text-muted" style="line-height: 1.8;">
+                        <div class="mb-1">
+                            <span class="text-muted">Size:</span> <strong class="text-dark">' . $file_size . '</strong>
                         </div>
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-download me-2" style="width: 16px;"></i>
-                            <span>Used ' . $media['used_count'] . 'x</span>
+                        <div>
+                            <span class="text-muted">Used:</span> <strong class="text-dark">' . $media['used_count'] . ' Fitur/modul</strong>
                         </div>
                     </div>
                 </div>
