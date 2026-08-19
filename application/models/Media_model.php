@@ -230,4 +230,100 @@ class Media_model extends CI_Model
 
         return $map;
     }
+
+    /**
+     * ========================================
+     * MEDIA LIBRARY FUNCTIONS (NEW)
+     * ========================================
+     */
+
+    /**
+     * Mengambil media dengan pagination dan search.
+     *
+     * @param int $page
+     * @param int $per_page
+     * @param string|null $search
+     * @return array
+     */
+    public function get_paginated($page = 1, $per_page = 9, $search = null)
+    {
+        $page = max(1, (int) $page);
+        $offset = ($page - 1) * $per_page;
+
+        $this->db->select('id, uuid, original_filename, mime_type, file_size, width, height, used_count, created_at');
+        $this->db->from($this->table);
+
+        if (!empty($search)) {
+            $this->db->like('original_filename', $search, 'both');
+        }
+
+        $this->db->order_by('created_at', 'DESC');
+        $this->db->limit($per_page, $offset);
+
+        return $this->db->get()->result_array();
+    }
+
+    /**
+     * Menghitung total media dengan optional search filter.
+     *
+     * @param string|null $search
+     * @return int
+     */
+    public function count_total($search = null)
+    {
+        $this->db->from($this->table);
+
+        if (!empty($search)) {
+            $this->db->like('original_filename', $search, 'both');
+        }
+
+        return $this->db->count_all_results();
+    }
+
+    /**
+     * Mengambil media berdasarkan ID (with file_content).
+     *
+     * @param int $id
+     * @return array|null
+     */
+    public function get_by_id($id)
+    {
+        return $this->db
+            ->select('*')
+            ->from($this->table)
+            ->where('id', (int) $id)
+            ->limit(1)
+            ->get()
+            ->row_array();
+    }
+
+    /**
+     * Increment used_count untuk tracking.
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function increment_used_count($id)
+    {
+        return $this->db
+            ->where('id', (int) $id)
+            ->set('used_count', 'used_count+1', FALSE)
+            ->update($this->table);
+    }
+
+    /**
+     * Decrement used_count untuk tracking.
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function decrement_used_count($id)
+    {
+        $this->db->where('id', (int) $id);
+        $this->db->where('used_count > 0');
+
+        return $this->db
+            ->set('used_count', 'used_count-1', FALSE)
+            ->update($this->table);
+    }
 }
