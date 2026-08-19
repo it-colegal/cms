@@ -10,8 +10,8 @@ if (empty($site))
 $this->load->model('Service_model');
 $this->load->model('Product_model');
 
-$services = $this->Service_model->get_active_services();
-$products = $this->Product_model->get_active_products();
+$services = $this->Service_model->get_published();
+$products = $this->Product_model->get_published();
 ?>
 
 <section id="contact" class="section-padding position-relative overflow-hidden">
