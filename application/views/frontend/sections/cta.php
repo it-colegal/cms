@@ -5,6 +5,52 @@
 
     <div class="container position-relative" style="z-index:2;">
 
+        <!-- Services Overview -->
+        <div class="row g-4 mb-6">
+
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fa-solid fa-scale-balanced" style="font-size:2.5rem;color:var(--pt);"></i>
+                    </div>
+                    <h5>Konsultan Legalitas Hukum</h5>
+                    <p class="text-secondary small">Perlindungan hukum & perizinan perusahaan Anda</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fa-solid fa-calculator" style="font-size:2.5rem;color:var(--pt);"></i>
+                    </div>
+                    <h5>Pajak & Akuntansi</h5>
+                    <p class="text-secondary small">Manajemen keuangan & perpajakan yang efisien</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fa-solid fa-building" style="font-size:2.5rem;color:var(--pt);"></i>
+                    </div>
+                    <h5>Virtual Working Space</h5>
+                    <p class="text-secondary small">Ruang kerja virtual untuk tim yang fleksibel</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fa-solid fa-laptop" style="font-size:2.5rem;color:var(--pt);"></i>
+                    </div>
+                    <h5>Konsultan IT</h5>
+                    <p class="text-secondary small">Solusi teknologi & infrastruktur digital</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- CTA Section -->
         <div class="gc p-5 p-lg-6 text-center">
 
             <span class="slbl justify-content-center">
@@ -12,17 +58,15 @@
             </span>
 
             <h2 class="stitle mb-4">
-                Siap Mewujudkan
-                <span class="gt">Solusi Digital Terbaik Anda?</span>
+                Butuh Solusi Bisnis
+                <span class="gt">untuk Perusahaan Anda?</span>
             </h2>
 
             <p class="ssub mx-auto mb-5">
 
-                Tim
-                <strong><?php echo html_escape($site['company_name']); ?></strong>
-                siap membantu mulai dari konsultasi, perencanaan,
-                hingga implementasi solusi digital yang sesuai
-                dengan kebutuhan perusahaan Anda.
+                Tim profesional <strong><?php echo html_escape($site['company_name']); ?></strong>
+                siap memberikan konsultasi terbaik di bidang legalitas, pajak, ruang kerja virtual,
+                dan teknologi informasi untuk mengembangkan bisnis Anda.
 
             </p>
 
