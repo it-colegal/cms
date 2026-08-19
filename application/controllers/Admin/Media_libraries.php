@@ -192,13 +192,26 @@ class Media_libraries extends MY_Controller
         ';
 
         if ($is_image) {
-            // Image preview
-            $file_content_base64 = base64_encode($media['file_content']);
-            $data_uri = 'data:' . $media['mime_type'] . ';base64,' . $file_content_base64;
+            // Fetch full media data including file_content for image preview
+            $full_media = $this->Media_model->get_by_id($media['id']);
+            if ($full_media) {
+                $file_content_base64 = base64_encode($full_media['file_content']);
+                $data_uri = 'data:' . $media['mime_type'] . ';base64,' . $file_content_base64;
 
-            $html .= '
-                    <img src="' . $data_uri . '" alt="' . html_escape($media['original_filename']) . '" style="width: 100%; height: 100%; object-fit: cover;">
-            ';
+                $html .= '
+                        <img src="' . $data_uri . '" alt="' . html_escape($media['original_filename']) . '" style="width: 100%; height: 100%; object-fit: cover;">
+                ';
+            } else {
+                $icon = $this->_get_file_icon($media['mime_type']);
+                $html .= '
+                        <div class="text-center">
+                            <div style="font-size: 48px; color: #999; margin-bottom: 10px;">
+                                ' . $icon . '
+                            </div>
+                            <small class="text-muted d-block">' . strtoupper(explode('/', $media['mime_type'])[1] ?? 'File') . '</small>
+                        </div>
+                ';
+            }
         } else {
             // File icon
             $icon = $this->_get_file_icon($media['mime_type']);
