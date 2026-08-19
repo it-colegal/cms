@@ -106,7 +106,7 @@
                 <li class="nav-header" style="color:#94a3b8;font-size:11px;font-weight:700;letter-spacing:1px;">MEDIA
                 </li>
 
-                <li class="nav-item"><a href="<?= site_url('admin/media'); ?>" class="nav-link"><i
+                <li class="nav-item"><a href="<?= site_url('admin/media_libraries'); ?>" class="nav-link"><i
                             class="nav-icon bi bi-folder2-open"></i>
                         <p>Media Library</p>
                     </a></li>
