@@ -59,7 +59,7 @@ if (empty($teams))
 
                             </h5>
 
-                            <p class="mb-3 card-text text-muted small">
+                            <p class="mb-3 card-text text-secondary small">
 
                                 <?= html_escape($member['position']); ?>
 

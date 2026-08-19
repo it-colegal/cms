@@ -31,5 +31,17 @@ $route['service/(:any)'] = 'service/detail/$1';
 $route['product'] = 'product/index';
 $route['product/(:any)'] = 'product/detail/$1';
 
+$route['portfolio'] = 'portfolio/index';
+$route['portfolio/(:any)'] = 'portfolio/detail/$1';
+
+$route['team'] = 'team/index';
+$route['team/(:any)'] = 'team/detail/$1';
+
+$route['testimonial'] = 'testimonial/index';
+$route['testimonial/(:any)'] = 'testimonial/detail/$1';
+
+$route['client'] = 'client/index';
+$route['client/(:any)'] = 'client/detail/$1';
+
 $route['news'] = 'news/index';
 $route['news/(:any)'] = 'news/detail/$1';

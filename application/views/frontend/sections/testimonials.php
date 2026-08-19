@@ -67,7 +67,7 @@ if (empty($testimonials))
 
                                     <?php if (!empty($testimonial['position']) || !empty($testimonial['company'])) : ?>
 
-                                        <small class="card-text text-muted">
+                                        <small class="card-text text-secondary">
 
                                             <?php
                                             echo html_escape($testimonial['position']);
@@ -108,7 +108,7 @@ if (empty($testimonials))
 
     <div class="text-center mt-5">
 
-        <a href="<?= base_url('testimonials'); ?>" class="btn boc">
+        <a href="<?= base_url('testimonial'); ?>" class="btn boc">
 
             Lihat Semua Testimoni
 

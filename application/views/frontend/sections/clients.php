@@ -66,7 +66,7 @@ if (empty($clients))
 
                             <?php else : ?>
 
-                                <strong class="text-muted">
+                                <strong class="text-secondary">
 
                                     <?= html_escape($client['name']); ?>
 
@@ -88,7 +88,7 @@ if (empty($clients))
 
     <div class="text-center mt-5">
 
-        <a href="<?= base_url('clients'); ?>" class="btn boc">
+        <a href="<?= base_url('client'); ?>" class="btn boc">
 
             Lihat Semua Klien
 
