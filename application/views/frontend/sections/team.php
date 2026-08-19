@@ -7,7 +7,7 @@ if (empty($teams))
 }
 ?>
 
-<section id="team" class="section-padding">
+<section id="team" class="position-relative overflow-hidden">
 
     <div class="container">
 
@@ -21,7 +21,7 @@ if (empty($teams))
 
             </span>
 
-            <h2 class="stitle mt-3">
+            <h2 class="mt-3">
 
                 Kenali Tim Profesional Kami
 
@@ -41,18 +41,13 @@ if (empty($teams))
 
                 <div class="col-lg-3 col-md-6">
 
-                    <div class="card border-0 shadow-sm h-100">
+                    <div class="card border-0 shadow-sm h-100 team-card">
 
                         <?php if (!empty($member['photo_media_id'])) : ?>
 
-                            <!--
-                                Photo akan dirender oleh Media Module.
-                            -->
-
-                            <img
-                                src=""
-                                alt="<?php echo html_escape($member['name']); ?>"
-                                class="card-img-top">
+                            <img src="<?= site_url('media/show/' . $member['photo_media_id']); ?>"
+                                alt="<?= html_escape($member['name']); ?>"
+                                class="card-img-top product-service-image">
 
                         <?php endif; ?>
 
@@ -60,25 +55,38 @@ if (empty($teams))
 
                             <h5 class="mb-1 card-title">
 
-                                <?php echo html_escape($member['name']); ?>
+                                <?= html_escape($member['name']); ?>
 
                             </h5>
 
-                            <p class="mb-3 card-text">
+                            <p class="mb-3 card-text text-muted small">
 
-                                <?php echo html_escape($member['position']); ?>
+                                <?= html_escape($member['position']); ?>
 
                             </p>
 
+                            <?php if (!empty($member['bio'])) : ?>
+
+                                <p class="card-text mb-3 small">
+
+                                    <?= nl2br(html_escape($member['bio'])); ?>
+
+                                </p>
+
+                            <?php endif; ?>
+
+                        </div>
+
+                        <div class="card-footer bg-transparent border-0">
+
                             <?php if (!empty($member['linkedin'])) : ?>
 
-                                <a
-                                    href="<?php echo html_escape($member['linkedin']); ?>"
+                                <a href="<?= html_escape($member['linkedin']); ?>"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="boc btn btn-sm px-3 py-2">
+                                    class="btn btn-sm bgrd w-100">
 
-                                    LinkedIn
+                                    <i class="fab fa-linkedin me-1"></i> LinkedIn
 
                                 </a>
 
@@ -93,6 +101,18 @@ if (empty($teams))
             <?php endforeach; ?>
 
         </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+
+        <a href="<?= base_url('team'); ?>" class="btn boc">
+
+            Lihat Semua Tim
+
+            <i class="fa-solid fa-arrow-right ms-2"></i>
+
+        </a>
 
     </div>
 

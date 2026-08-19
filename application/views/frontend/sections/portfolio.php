@@ -7,7 +7,7 @@ if (empty($portfolios))
 }
 ?>
 
-<section id="portfolio" class="section-padding">
+<section id="portfolio" class="position-relative overflow-hidden">
 
     <div class="container">
 
@@ -41,19 +41,13 @@ if (empty($portfolios))
 
                 <div class="col-lg-4 col-md-6">
 
-                    <div class="card h-100 border-0 shadow-sm">
+                    <div class="card h-100 border-0 shadow-sm portfolio-card">
 
                         <?php if (!empty($portfolio['featured_image_media_id'])) : ?>
 
-                            <!--
-                                Portofolio image akan dirender
-                                melalui Media Module.
-                            -->
-
-                            <img
-                                src=""
-                                alt="<?php echo html_escape($portfolio['title']); ?>"
-                                class="card-img-top">
+                            <img src="<?= site_url('media/show/' . $portfolio['featured_image_media_id']); ?>"
+                                alt="<?= html_escape($portfolio['title']); ?>"
+                                class="card-img-top product-service-image">
 
                         <?php endif; ?>
 
@@ -61,7 +55,7 @@ if (empty($portfolios))
 
                             <h4 class="card-title">
 
-                                <?php echo html_escape($portfolio['title']); ?>
+                                <?= html_escape($portfolio['title']); ?>
 
                             </h4>
 
@@ -69,7 +63,7 @@ if (empty($portfolios))
 
                                 <p class="card-text mt-3">
 
-                                    <?php echo nl2br(html_escape($portfolio['summary'])); ?>
+                                    <?= nl2br(html_escape($portfolio['summary'])); ?>
 
                                 </p>
 
@@ -79,9 +73,7 @@ if (empty($portfolios))
 
                         <div class="card-footer bg-transparent border-0">
 
-                            <a
-                                href="<?php echo site_url('portfolio/' . $portfolio['slug']); ?>"
-                                class="btn btn-outline-primary">
+                            <a href="<?= site_url('portfolio/' . $portfolio['slug']); ?>" class="btn bgrd">
 
                                 Lihat Proyek
 
@@ -96,6 +88,18 @@ if (empty($portfolios))
             <?php endforeach; ?>
 
         </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+
+        <a href="<?= base_url('portfolio'); ?>" class="btn boc">
+
+            Lihat Semua Portofolio
+
+            <i class="fa-solid fa-arrow-right ms-2"></i>
+
+        </a>
 
     </div>
 

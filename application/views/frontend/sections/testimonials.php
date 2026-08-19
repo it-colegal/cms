@@ -7,7 +7,7 @@ if (empty($testimonials))
 }
 ?>
 
-<section id="testimonials" class="section-padding">
+<section id="testimonials" class="position-relative overflow-hidden">
 
     <div class="container">
 
@@ -21,7 +21,7 @@ if (empty($testimonials))
 
             </span>
 
-            <h2 class="stitle mt-3">
+            <h2 class="mt-3">
 
                 Apa Kata Klien Kami
 
@@ -41,7 +41,7 @@ if (empty($testimonials))
 
                 <div class="col-lg-4 col-md-6">
 
-                    <div class="card border-0 shadow-sm h-100">
+                    <div class="card border-0 shadow-sm h-100 testimonial-card">
 
                         <div class="card-body">
 
@@ -49,15 +49,9 @@ if (empty($testimonials))
 
                                 <?php if (!empty($testimonial['photo_media_id'])) : ?>
 
-                                    <!--
-                                        Foto testimonial akan dirender
-                                        melalui Media Module.
-                                    -->
-
-                                    <img
-                                        src=""
-                                        alt="<?php echo html_escape($testimonial['name']); ?>"
-                                        class="rounded-circle me-3"
+                                    <img src="<?= site_url('media/show/' . $testimonial['photo_media_id']); ?>"
+                                        alt="<?= html_escape($testimonial['name']); ?>"
+                                        class="rounded-circle me-3 object-fit-cover"
                                         width="72"
                                         height="72">
 
@@ -67,13 +61,13 @@ if (empty($testimonials))
 
                                     <h5 class="mb-1 card-title">
 
-                                        <?php echo html_escape($testimonial['name']); ?>
+                                        <?= html_escape($testimonial['name']); ?>
 
                                     </h5>
 
                                     <?php if (!empty($testimonial['position']) || !empty($testimonial['company'])) : ?>
 
-                                        <small class="card-text">
+                                        <small class="card-text text-muted">
 
                                             <?php
                                             echo html_escape($testimonial['position']);
@@ -94,9 +88,9 @@ if (empty($testimonials))
 
                             </div>
 
-                            <p class="ssub mb-0">
+                            <p class="card-text mb-0">
 
-                                "<?php echo nl2br(html_escape($testimonial['content'])); ?>"
+                                "<?= nl2br(html_escape($testimonial['content'])); ?>"
 
                             </p>
 
@@ -109,6 +103,18 @@ if (empty($testimonials))
             <?php endforeach; ?>
 
         </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+
+        <a href="<?= base_url('testimonials'); ?>" class="btn boc">
+
+            Lihat Semua Testimoni
+
+            <i class="fa-solid fa-arrow-right ms-2"></i>
+
+        </a>
 
     </div>
 

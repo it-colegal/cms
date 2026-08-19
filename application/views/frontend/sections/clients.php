@@ -7,7 +7,7 @@ if (empty($clients))
 }
 ?>
 
-<section id="clients" class="section-padding">
+<section id="clients" class="position-relative overflow-hidden">
 
     <div class="container">
 
@@ -21,7 +21,7 @@ if (empty($clients))
 
             </span>
 
-            <h2 class="stitle mt-3">
+            <h2 class="mt-3">
 
                 Dipercaya Berbagai Perusahaan
 
@@ -48,32 +48,27 @@ if (empty($clients))
                     <<?php echo $tag; ?>
 
                         <?php if ($tag === 'a') : ?>
-                            href="<?php echo html_escape($client['website']); ?>"
+                            href="<?= html_escape($client['website']); ?>"
                             target="_blank"
                             rel="noopener noreferrer"
                         <?php endif; ?>
 
-                        class="gc h-100 text-center text-decoration-none">
+                        class="client-card card h-100 border-0 shadow-sm text-center text-decoration-none d-flex align-items-center justify-content-center">
 
                         <div class="card-body d-flex align-items-center justify-content-center">
 
                             <?php if (!empty($client['logo_media_id'])) : ?>
 
-                                <!--
-                                    Logo akan dirender melalui
-                                    Media Module.
-                                -->
-
-                                <img
-                                    src=""
-                                    alt="<?php echo html_escape($client['name']); ?>"
-                                    class="img-fluid">
+                                <img src="<?= site_url('media/show/' . $client['logo_media_id']); ?>"
+                                    alt="<?= html_escape($client['name']); ?>"
+                                    class="img-fluid object-fit-contain"
+                                    style="max-height: 80px;">
 
                             <?php else : ?>
 
-                                <strong>
+                                <strong class="text-muted">
 
-                                    <?php echo html_escape($client['name']); ?>
+                                    <?= html_escape($client['name']); ?>
 
                                 </strong>
 
@@ -88,6 +83,18 @@ if (empty($clients))
             <?php endforeach; ?>
 
         </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+
+        <a href="<?= base_url('clients'); ?>" class="btn boc">
+
+            Lihat Semua Klien
+
+            <i class="fa-solid fa-arrow-right ms-2"></i>
+
+        </a>
 
     </div>
 
