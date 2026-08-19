@@ -281,33 +281,17 @@ $(function () {
 
 <style>
 .media-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid #e0e0e0;
-    overflow: hidden;
+    transition: all 0.3s ease;
+    background: #fff;
 }
 
 .media-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
-    border-color: #d0d0d0;
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
 }
 
 .btn-group .btn-sm {
-    border-radius: 0;
-}
-
-.btn-group .btn-sm:first-child {
-    border-radius: 4px 0 0 4px;
-}
-
-.btn-group .btn-sm:last-child {
-    border-radius: 0 4px 4px 0;
-}
-
-.card-footer .btn {
-    padding: 6px 10px;
-    font-size: 11px;
-    border-radius: 4px;
+    border-radius: 4px !important;
 }
 
 .file-info-section {
