@@ -28,15 +28,7 @@
 
             <!-- Media Grid Container -->
             <div class="row" id="media-container">
-                <?php if (!empty($media)): ?>
-                    <?php foreach ($media as $item): ?>
-                        <?php echo $this->_render_card($item); ?>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="col-12">
-                        <p class="text-muted text-center">No media found</p>
-                    </div>
-                <?php endif; ?>
+                <?php echo $media_html; ?>
             </div>
 
             <!-- Pagination -->

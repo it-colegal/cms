@@ -20,6 +20,16 @@ class Media_libraries extends MY_Controller
         $total = $this->Media_model->count_total($search);
         $total_pages = ceil($total / $per_page);
 
+        // Generate HTML cards
+        $media_html = '';
+        if (!empty($media)) {
+            foreach ($media as $item) {
+                $media_html .= $this->_render_card($item);
+            }
+        } else {
+            $media_html = '<div class="col-12"><p class="text-muted text-center">No media found</p></div>';
+        }
+
         $data = [
             'title' => 'Media Libraries',
             'page_header' => 'Media Libraries',
@@ -30,7 +40,7 @@ class Media_libraries extends MY_Controller
             </li>
             <li class="breadcrumb-item active">Media Libraries</li>
         </ol>',
-            'media' => $media,
+            'media_html' => $media_html,
             'current_page' => $page,
             'total_pages' => $total_pages,
             'total_media' => $total,
