@@ -370,9 +370,17 @@ $products = $this->Product_model->get_published();
                     <!-- Details akan diisi oleh JavaScript -->
                 </div>
 
-                <p class="text-secondary small mb-3">
-                    Redirecting ke WhatsApp dalam <span id="countdown">5</span> detik...
-                </p>
+                <div class="d-flex flex-column gap-3">
+                    <div>
+                        <p class="text-secondary small mb-2">
+                            Redirecting ke WhatsApp dalam <span id="countdown">5</span> detik...
+                        </p>
+                        <button type="button" class="btn btn-success w-100 rounded-2 fw-semibold" id="whatsappBtn">
+                            <i class="fa-brands fa-whatsapp me-2"></i>Buka WhatsApp Sekarang
+                        </button>
+                    </div>
+                    <p class="text-secondary small mb-0">atau klik tombol di atas untuk memulai konsultasi</p>
+                </div>
             </div>
             <div class="modal-footer border-0">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -431,9 +439,12 @@ $products = $this->Product_model->get_published();
             form: null,
             submitBtn: null,
             resetBtn: null,
+            whatsappBtn: null,
             whatsappDelay: 5000, // 5 seconds
             companyName: '', // Will be set from window.siteSettings
             phoneNumber: '', // Will be set from window.siteSettings
+            currentData: null, // Store current submission data
+            redirectTimeout: null, // Store timeout reference
 
             init: function() {
                 this.form = document.getElementById('contactForm');
@@ -441,6 +452,7 @@ $products = $this->Product_model->get_published();
 
                 this.submitBtn = this.form.querySelector('button[type="submit"]');
                 this.resetBtn = this.form.querySelector('button[type="reset"]');
+                this.whatsappBtn = document.getElementById('whatsappBtn');
                 this.companyName = window.siteSettings?.company_name || 'Kami';
                 this.phoneNumber = window.siteSettings?.phone || '';
 
@@ -449,6 +461,9 @@ $products = $this->Product_model->get_published();
 
             attachEventListeners: function() {
                 this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                if (this.whatsappBtn) {
+                    this.whatsappBtn.addEventListener('click', (e) => this.handleWhatsappClick(e));
+                }
             },
 
             handleSubmit: function(e) {
@@ -489,6 +504,9 @@ $products = $this->Product_model->get_published();
             },
 
             handleSuccess: function(data) {
+                // Store current data for WhatsApp redirect
+                this.currentData = data;
+
                 // Show success modal
                 this.showSuccessModal(data);
 
@@ -496,7 +514,7 @@ $products = $this->Product_model->get_published();
                 this.form.reset();
 
                 // Redirect to WhatsApp after delay
-                setTimeout(() => {
+                this.redirectTimeout = setTimeout(() => {
                     this.redirectToWhatsApp(data);
                 }, this.whatsappDelay);
             },
@@ -563,12 +581,27 @@ $products = $this->Product_model->get_published();
                 }
             },
 
+            handleWhatsappClick: function(e) {
+                e.preventDefault();
+
+                // Clear the redirect timeout if user clicks button manually
+                if (this.redirectTimeout) {
+                    clearTimeout(this.redirectTimeout);
+                }
+
+                // Redirect immediately
+                if (this.currentData) {
+                    this.redirectToWhatsApp(this.currentData);
+                }
+            },
+
             redirectToWhatsApp: function(data) {
                 // Build WhatsApp message
                 const message = `Halo ${this.companyName}, saya ${data.name}\nEmail: ${data.email}\nTelepon: ${data.phone || '-'}\nPerihal: ${data.subject}\nPesan: ${data.message}`;
 
                 if (!this.phoneNumber) {
                     console.error('WhatsApp number not configured');
+                    alert('Nomor WhatsApp tidak dikonfigurasi');
                     return;
                 }
 
