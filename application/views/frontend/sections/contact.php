@@ -339,6 +339,40 @@ $products = $this->Product_model->get_published();
 
 </section>
 
+<!-- Success Modal -->
+<div class="modal fade" id="successContactModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center px-4 py-5">
+                <div class="mb-4">
+                    <i class="fa-solid fa-circle-check text-success" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="mb-3 fw-bold">Pesan Berhasil Dikirim!</h5>
+                <p class="text-secondary mb-4">
+                    Terima kasih telah menghubungi kami. Kami akan menghubungi Anda melalui kontak yang Anda berikan.
+                </p>
+                <p class="text-secondary mb-4">
+                    Kami akan mengalihkan Anda ke WhatsApp untuk proses konsultasi yang lebih cepat.
+                </p>
+                
+                <div class="bg-light rounded-3 p-4 text-start mb-4" id="modalDetails">
+                    <!-- Details akan diisi oleh JavaScript -->
+                </div>
+
+                <p class="text-secondary small mb-3">
+                    Redirecting ke WhatsApp dalam <span id="countdown">5</span> detik...
+                </p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     /* Form Styling - Default Colors */
     #contactForm .form-control,
@@ -376,3 +410,199 @@ $products = $this->Product_model->get_published();
         }
     }
 </style>
+
+<script>
+    /**
+     * Contact Form Submission Handler
+     * Handles form validation, submission, modal display, and WhatsApp redirect
+     */
+    (function() {
+        'use strict';
+
+        const ContactForm = {
+            form: null,
+            submitBtn: null,
+            resetBtn: null,
+            whatsappDelay: 5000, // 5 seconds
+            companyName: '', // Will be set from window.siteSettings
+
+            init: function() {
+                this.form = document.getElementById('contactForm');
+                if (!this.form) return;
+
+                this.submitBtn = this.form.querySelector('button[type="submit"]');
+                this.resetBtn = this.form.querySelector('button[type="reset"]');
+                this.companyName = window.siteSettings?.company_name || 'Kami';
+
+                this.attachEventListeners();
+            },
+
+            attachEventListeners: function() {
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+            },
+
+            handleSubmit: function(e) {
+                e.preventDefault();
+
+                // Disable submit button
+                this.submitBtn.disabled = true;
+                this.submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Mengirim...';
+
+                // Get form data
+                const formData = new FormData(this.form);
+
+                // Submit via AJAX
+                fetch(this.form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(result => {
+                    this.submitBtn.disabled = false;
+                    this.submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i>Kirim Pesan';
+
+                    if (result.success) {
+                        this.handleSuccess(result.data);
+                    } else {
+                        this.handleError(result.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    this.submitBtn.disabled = false;
+                    this.submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i>Kirim Pesan';
+                    this.handleError('Terjadi kesalahan pada server');
+                });
+            },
+
+            handleSuccess: function(data) {
+                // Show success modal
+                this.showSuccessModal(data);
+
+                // Reset form
+                this.form.reset();
+
+                // Redirect to WhatsApp after delay
+                setTimeout(() => {
+                    this.redirectToWhatsApp(data);
+                }, this.whatsappDelay);
+            },
+
+            handleError: function(message) {
+                // Show error modal or alert
+                alert('Error: ' + message);
+            },
+
+            showSuccessModal: function(data) {
+                // Build details HTML
+                const detailsHtml = `
+                    <h6 class="fw-bold mb-3">Detail Pesan Anda:</h6>
+                    <div class="mb-2">
+                        <span class="text-secondary small">Nama:</span>
+                        <p class="mb-0 fw-semibold">${this.escapeHtml(data.name)}</p>
+                    </div>
+                    <div class="mb-2">
+                        <span class="text-secondary small">Email:</span>
+                        <p class="mb-0 fw-semibold">${this.escapeHtml(data.email)}</p>
+                    </div>
+                    ${data.phone ? `
+                        <div class="mb-2">
+                            <span class="text-secondary small">Telepon:</span>
+                            <p class="mb-0 fw-semibold">${this.escapeHtml(data.phone)}</p>
+                        </div>
+                    ` : ''}
+                    <div class="mb-2">
+                        <span class="text-secondary small">Perihal:</span>
+                        <p class="mb-0 fw-semibold">${this.escapeHtml(data.subject)}</p>
+                    </div>
+                    <div>
+                        <span class="text-secondary small">Pesan:</span>
+                        <p class="mb-0 fw-semibold" style="word-break: break-word;">${this.escapeHtml(data.message).replace(/\n/g, '<br>')}</p>
+                    </div>
+                `;
+
+                // Insert details into modal
+                const detailsElement = document.getElementById('modalDetails');
+                if (detailsElement) {
+                    detailsElement.innerHTML = detailsHtml;
+                }
+
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('successContactModal'));
+                modal.show();
+
+                // Countdown timer
+                this.startCountdown();
+            },
+
+            startCountdown: function() {
+                let count = 5;
+                const countdownElement = document.getElementById('countdown');
+
+                if (countdownElement) {
+                    const interval = setInterval(() => {
+                        count--;
+                        countdownElement.textContent = count;
+                        if (count <= 0) {
+                            clearInterval(interval);
+                        }
+                    }, 1000);
+                }
+            },
+
+            redirectToWhatsApp: function(data) {
+                // Build WhatsApp message
+                const message = `Halo ${this.companyName}, saya ${data.name}\nEmail: ${data.email}\nTelepon: ${data.phone || '-'}\nPerihal: ${data.subject}\nPesan: ${data.message}`;
+
+                // Get WhatsApp number from window.siteSettings
+                const phoneNumber = window.siteSettings?.whatsapp_number || '';
+
+                if (!phoneNumber) {
+                    console.error('WhatsApp number not configured');
+                    return;
+                }
+
+                // Format phone number (remove non-digits, add country code if needed)
+                let formattedPhone = phoneNumber.replace(/\D/g, '');
+                if (!formattedPhone.startsWith('62')) {
+                    if (formattedPhone.startsWith('0')) {
+                        formattedPhone = '62' + formattedPhone.substring(1);
+                    } else {
+                        formattedPhone = '62' + formattedPhone;
+                    }
+                }
+
+                // Create WhatsApp URL
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
+
+                // Open in new tab
+                window.open(whatsappUrl, '_blank');
+            },
+
+            escapeHtml: function(text) {
+                const map = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                };
+                return text.replace(/[&<>"']/g, m => map[m]);
+            }
+        };
+
+        // Initialize on DOM ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => ContactForm.init());
+        } else {
+            ContactForm.init();
+        }
+
+        // Expose to window for debugging
+        window.ContactForm = ContactForm;
+    })();
+</script>
