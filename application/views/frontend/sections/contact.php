@@ -121,8 +121,21 @@ $products = $this->Product_model->get_published();
 
                                 <div class="flex-grow-1">
                                     <p class="small text-secondary mb-1">Telepon</p>
-                                    <a href="tel:<?php echo html_escape($site['phone']); ?>" class="fw-semibold text-decoration-none" style="color:var(--tx);">
-                                        <?php echo html_escape($site['phone']); ?>
+                                    <?php 
+                                        $phone = $site['phone'];
+                                        $phone_clean = preg_replace('/\D/', '', $phone);
+                                        if (!preg_match('/^62/', $phone_clean)) {
+                                            if (preg_match('/^0/', $phone_clean)) {
+                                                $phone_clean = '62' . substr($phone_clean, 1);
+                                            } else {
+                                                $phone_clean = '62' . $phone_clean;
+                                            }
+                                        }
+                                        $message = urlencode("Halo " . $site['company_name'] . ", saya ingin berkonsultasi dengan Anda");
+                                        $whatsapp_url = "https://wa.me/{$phone_clean}?text={$message}";
+                                    ?>
+                                    <a href="<?php echo $whatsapp_url; ?>" class="fw-semibold text-decoration-none" style="color:var(--tx);" target="_blank" rel="noopener noreferrer">
+                                        <i class="fa-brands fa-whatsapp me-2"></i><?php echo html_escape($phone); ?>
                                     </a>
                                 </div>
 
