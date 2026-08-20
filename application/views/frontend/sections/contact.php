@@ -14,6 +14,14 @@ $services = $this->Service_model->get_published();
 $products = $this->Product_model->get_published();
 ?>
 
+<!-- Set Site Settings untuk JavaScript -->
+<script>
+    window.siteSettings = {
+        company_name: '<?= isset($site['company_name']) ? addslashes($site['company_name']) : 'Kami'; ?>',
+        phone: '<?= isset($site['phone']) ? addslashes($site['phone']) : ''; ?>'
+    };
+</script>
+
 <section id="contact" class="section-padding position-relative overflow-hidden">
 
     <!-- Background Decorative Elements -->
@@ -425,6 +433,7 @@ $products = $this->Product_model->get_published();
             resetBtn: null,
             whatsappDelay: 5000, // 5 seconds
             companyName: '', // Will be set from window.siteSettings
+            phoneNumber: '', // Will be set from window.siteSettings
 
             init: function() {
                 this.form = document.getElementById('contactForm');
@@ -433,6 +442,7 @@ $products = $this->Product_model->get_published();
                 this.submitBtn = this.form.querySelector('button[type="submit"]');
                 this.resetBtn = this.form.querySelector('button[type="reset"]');
                 this.companyName = window.siteSettings?.company_name || 'Kami';
+                this.phoneNumber = window.siteSettings?.phone || '';
 
                 this.attachEventListeners();
             },
@@ -557,16 +567,13 @@ $products = $this->Product_model->get_published();
                 // Build WhatsApp message
                 const message = `Halo ${this.companyName}, saya ${data.name}\nEmail: ${data.email}\nTelepon: ${data.phone || '-'}\nPerihal: ${data.subject}\nPesan: ${data.message}`;
 
-                // Get WhatsApp number from window.siteSettings
-                const phoneNumber = window.siteSettings?.whatsapp_number || '';
-
-                if (!phoneNumber) {
+                if (!this.phoneNumber) {
                     console.error('WhatsApp number not configured');
                     return;
                 }
 
                 // Format phone number (remove non-digits, add country code if needed)
-                let formattedPhone = phoneNumber.replace(/\D/g, '');
+                let formattedPhone = this.phoneNumber.replace(/\D/g, '');
                 if (!formattedPhone.startsWith('62')) {
                     if (formattedPhone.startsWith('0')) {
                         formattedPhone = '62' + formattedPhone.substring(1);
