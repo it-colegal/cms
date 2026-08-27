@@ -3,11 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Client_model extends CI_Model
 {
-    /**
-     * Nama tabel.
-     *
-     * @var string
-     */
     protected $table = 'clients';
 
     public function __construct()
@@ -16,219 +11,37 @@ class Client_model extends CI_Model
     }
 
     /**
-     * Mengambil semua klien.
-     *
-     * @return array
+     * Get published clients with pagination
      */
-    public function get_all()
+    public function get_published($limit = NULL, $offset = 0)
     {
-        return $this->db
-            ->select('*')
-            ->from($this->table)
-            ->order_by('sort_order', 'ASC')
-            ->get()
-            ->result_array();
+        $query = $this->db->get_where(
+            $this->table,
+            ['status' => 'published'],
+            $limit,
+            $offset
+        );
+
+        return $query->result_array();
     }
 
     /**
-     * Mengambil klien berdasarkan ID.
-     *
-     * @param int $id
-     * @return array|null
+     * Count published clients
      */
-    public function get_by_id($id)
+    public function count_published()
     {
-        return $this->db
-            ->select('*')
-            ->from($this->table)
-            ->where('id', (int) $id)
-            ->limit(1)
-            ->get()
-            ->row_array();
-    }
+        return $this->db->count_all_results($this->table, FALSE);
 
-    /**
-     * Menghitung jumlah klien.
-     *
-     * @return int
-     */
-    public function count_all()
-    {
+        $this->db->where('status', 'published');
         return $this->db->count_all_results($this->table);
     }
 
     /**
-     * Mengambil klien untuk ditampilkan di frontend.
-     *
-     * @param int $limit
-     * @return array
+     * Get client by ID
      */
-    public function get_published($limit = null)
+    public function get_by_id($id)
     {
-        $query = $this->db
-            ->select('id, name, logo_media_id, website')
-            ->order_by('sort_order', 'ASC');
-
-        if ($limit) {
-            $query->limit($limit);
-        }
-
-        return $query->get($this->table)->result_array();
-    }
-
-    /**
-     * Menyimpan data.
-     *
-     * @param array $data
-     * @return int
-     */
-    public function insert($data)
-    {
-        $this->db->insert($this->table, $data);
-
-        return $this->db->insert_id();
-    }
-
-    /**
-     * Memperbarui data.
-     *
-     * @param int $id
-     * @param array $data
-     * @return bool
-     */
-    public function update($id, $data)
-    {
-        return $this->db
-            ->where('id', $id)
-            ->update($this->table, $data);
-    }
-
-    /**
-     * Menghapus data.
-     *
-     * @param int $id
-     * @return bool
-     */
-    public function delete($id)
-    {
-        return $this->db
-            ->where('id', $id)
-            ->delete($this->table);
-    }
-
-    /**
-     * Mengambil urutan berikutnya.
-     *
-     * @return int
-     */
-    public function get_next_order()
-    {
-        $this->db->select_max('sort_order');
-
-        $row = $this->db->get($this->table)->row_array();
-
-        return ((int) $row['sort_order']) + 1;
-    }
-
-    /**
-     * Memindahkan urutan ke atas.
-     *
-     * @param int $id
-     * @return bool
-     */
-    public function move_up($id)
-    {
-        $current = $this->get_by_id($id);
-
-        if (!$current || $current['sort_order'] <= 1) {
-            return false;
-        }
-
-        $other = $this->db
-            ->where('sort_order', $current['sort_order'] - 1)
-            ->get($this->table)
-            ->row_array();
-
-        if (!$other) {
-            return false;
-        }
-
-        $this->db->trans_start();
-
-        $this->update($other['id'], [
-            'sort_order' => $current['sort_order']
-        ]);
-
-        $this->update($current['id'], [
-            'sort_order' => $current['sort_order'] - 1
-        ]);
-
-        $this->db->trans_complete();
-
-        return $this->db->trans_status();
-    }
-
-    /**
-     * Memindahkan urutan ke bawah.
-     *
-     * @param int $id
-     * @return bool
-     */
-    public function move_down($id)
-    {
-        $current = $this->get_by_id($id);
-
-        if (!$current) {
-            return false;
-        }
-
-        $other = $this->db
-            ->where('sort_order', $current['sort_order'] + 1)
-            ->get($this->table)
-            ->row_array();
-
-        if (!$other) {
-            return false;
-        }
-
-        $this->db->trans_start();
-
-        $this->update($other['id'], [
-            'sort_order' => $current['sort_order']
-        ]);
-
-        $this->update($current['id'], [
-            'sort_order' => $current['sort_order'] + 1
-        ]);
-
-        $this->db->trans_complete();
-
-        return $this->db->trans_status();
-    }
-
-    /**
-     * Reorder sort_order setelah ada yang dihapus.
-     * Memastikan urutan rapi tanpa gap.
-     *
-     * @return void
-     */
-    public function reorder_sort_order()
-    {
-        $clients = $this->db
-            ->select('id')
-            ->from($this->table)
-            ->order_by('sort_order', 'ASC')
-            ->get()
-            ->result_array();
-
-        $this->db->trans_start();
-
-        foreach ($clients as $index => $client) {
-            $this->db
-                ->where('id', $client['id'])
-                ->update($this->table, ['sort_order' => $index + 1]);
-        }
-
-        $this->db->trans_complete();
+        $query = $this->db->get_where($this->table, ['id' => $id]);
+        return $query->row_array();
     }
 }
