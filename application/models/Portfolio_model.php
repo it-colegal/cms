@@ -51,6 +51,28 @@ class Portfolio_model extends CI_Model
     }
 
     /**
+     * Mengambil portfolio yang dipublikasikan untuk ditampilkan di frontend.
+     *
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
+    public function get_published($limit = null, $offset = null)
+    {
+        $query = $this->db
+            ->select('*')
+            ->from($this->table)
+            ->where('status', 'published')
+            ->order_by('published_at', 'DESC');
+
+        if ($limit) {
+            $query->limit($limit, $offset);
+        }
+
+        return $query->get()->result_array();
+    }
+
+    /**
      * Mengambil portfolio berdasarkan slug.
      *
      * @param string $slug
@@ -86,13 +108,15 @@ class Portfolio_model extends CI_Model
     }
 
     /**
-     * Menghitung jumlah portfolio (semua status).
+     * Menghitung jumlah portfolio yang dipublikasikan.
      *
      * @return int
      */
     public function count_published()
     {
-        return $this->db->count_all_results($this->table);
+        return $this->db
+            ->where('status', 'published')
+            ->count_all_results($this->table);
     }
 
     public function insert($data)

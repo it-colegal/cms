@@ -73,38 +73,30 @@
     list-style: none;
 }
 .testimonial-pagination .page-link {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 12px;
+    color: var(--pri);
+    background-color: transparent;
     border: 1px solid var(--bd);
-    background: var(--sf);
-    color: var(--tx) !important;
-    font-weight: 600;
-    text-decoration: none;
-    transition: .25s;
-    box-shadow: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    transition: .2s;
 }
 .testimonial-pagination .page-link:hover {
-    background: var(--pri);
+    background-color: var(--pri);
+    color: white;
     border-color: var(--pri);
-    color: #fff !important;
 }
 .testimonial-pagination .page-item.active .page-link {
-    background: var(--pri);
+    background-color: var(--pri);
     border-color: var(--pri);
-    color: #fff !important;
+    color: white;
 }
-.testimonial-pagination .page-item.disabled .page-link {
-    background: var(--sf);
-    border-color: var(--bd);
-    color: var(--tx2) !important;
-    opacity: .45;
-    pointer-events: none;
-}
-@media(max-width:576px) {
+@media (max-width: 768px) {
+    .testimonial-card {
+        padding: 24px 20px;
+    }
+    .testimonial-quote {
+        font-size: .9rem;
+    }
     .testimonial-pagination .page-link {
         width: 42px;
         height: 42px;
@@ -118,19 +110,27 @@
         <?php foreach ($testimonials as $testimonial): ?>
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="testimonial-card">
-                    <p class="testimonial-quote">"<?= html_escape($testimonial['quote'] ?? $testimonial['content']); ?>"</p>
+                    <p class="testimonial-quote">"<?= html_escape($testimonial['content']); ?>"</p>
                     <div class="testimonial-author">
-                        <?php if (!empty($testimonial['author_photo_media_id'])): ?>
-                            <img src="<?= site_url('media/show/' . $testimonial['author_photo_media_id']); ?>" alt="<?= html_escape($testimonial['author_name']); ?>" class="testimonial-avatar">
+                        <?php if (!empty($testimonial['photo_media_id'])): ?>
+                            <img src="<?= site_url('media/show/' . $testimonial['photo_media_id']); ?>" alt="<?= html_escape($testimonial['name']); ?>" class="testimonial-avatar">
                         <?php else: ?>
-                            <div class="testimonial-avatar d-flex align-items-center justify-content-center bg-secondary text-white">
+                            <div class="testimonial-avatar d-flex align-items-center justify-content-center bg-secondary text-white" style="font-size: 1.5rem;">
                                 <i class="fa-solid fa-user"></i>
                             </div>
                         <?php endif; ?>
                         <div class="testimonial-info">
-                            <h4><?= html_escape($testimonial['author_name']); ?></h4>
-                            <?php if (!empty($testimonial['author_title'])): ?>
-                                <p><?= html_escape($testimonial['author_title']); ?></p>
+                            <h4><?= html_escape($testimonial['name']); ?></h4>
+                            <?php if (!empty($testimonial['position']) || !empty($testimonial['company'])): ?>
+                                <p>
+                                    <?php
+                                    echo html_escape($testimonial['position']);
+                                    if (!empty($testimonial['position']) && !empty($testimonial['company'])) {
+                                        echo ' · ';
+                                    }
+                                    echo html_escape($testimonial['company']);
+                                    ?>
+                                </p>
                             <?php endif; ?>
                         </div>
                     </div>
