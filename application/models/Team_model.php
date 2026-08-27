@@ -60,20 +60,32 @@ class Team_model extends CI_Model
     /**
      * Mengambil anggota tim untuk ditampilkan di frontend.
      *
-     * @param int $limit
+     * @param int|null $limit
+     * @param int $offset
      * @return array
      */
-    public function get_published($limit = null)
+    public function get_published($limit = null, $offset = 0)
     {
         $query = $this->db
-            ->select('id, name, position, photo_media_id, linkedin')
-            ->order_by('sort_order', 'ASC');
+            ->select('*')
+            ->order_by('sort_order', 'ASC')
+            ->order_by('id', 'ASC');
 
-        if ($limit) {
-            $query->limit($limit);
+        if ($limit !== null) {
+            $query->limit((int) $limit, (int) $offset);
         }
 
         return $query->get($this->table)->result_array();
+    }
+
+    /**
+     * Menghitung jumlah anggota tim yang dipublikasikan.
+     *
+     * @return int
+     */
+    public function count_published()
+    {
+        return $this->db->count_all_results($this->table);
     }
 
     /**

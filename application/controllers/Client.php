@@ -1,0 +1,190 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Client extends CI_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+
+        // Core
+        $this->load->model('Site_model');
+
+        // Modules
+        $this->load->model('Client_model');
+        $this->load->model('Menu_model');
+    }
+
+    /**
+     * Client Listing
+     */
+    public function index()
+    {
+        $this->load->library('pagination');
+
+        $data = [];
+
+        /*
+        |--------------------------------------------------------------------------
+        | Site Information
+        |--------------------------------------------------------------------------
+        */
+
+        $data['site'] = $this->Site_model->get_site();
+        $data['site'] = convert_media_fields($data['site']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | SEO
+        |--------------------------------------------------------------------------
+        */
+
+        $data['title'] = 'Klien';
+
+        $data['description'] =
+            'Daftar klien dan mitra bisnis yang telah mempercayakan kebutuhan mereka kepada kami.';
+
+        $data['keywords'] = 'klien, mitra, bisnis';
+
+        $data['image'] = '';
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pagination
+        |--------------------------------------------------------------------------
+        */
+
+        $per_page = 9;
+
+        $page = (int) $this->input->get('page');
+
+        if ($page < 1) {
+            $page = 1;
+        }
+
+        $offset = ($page - 1) * $per_page;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Clients
+        |--------------------------------------------------------------------------
+        */
+
+        $total_rows = $this->Client_model->count_published();
+
+        $data['clients'] = $this->Client_model->get_published(
+            $per_page,
+            $offset
+        );
+
+        $data['clients'] = convert_media_fields($data['clients']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pagination Configuration
+        |--------------------------------------------------------------------------
+        */
+
+        $config['base_url'] = site_url('client');
+
+        $config['page_query_string'] = TRUE;
+
+        $config['query_string_segment'] = 'page';
+
+        $config['reuse_query_string'] = TRUE;
+
+        $config['use_page_numbers'] = TRUE;
+
+        $config['total_rows'] = $total_rows;
+
+        $config['per_page'] = $per_page;
+
+        $config['full_tag_open'] =
+            '<nav><ul class="pagination">';
+
+        $config['full_tag_close'] =
+            '</ul></nav>';
+
+        $config['num_tag_open'] =
+            '<li class="page-item">';
+
+        $config['num_tag_close'] =
+            '</li>';
+
+        $config['cur_tag_open'] =
+            '<li class="page-item active"><span class="page-link">';
+
+        $config['cur_tag_close'] =
+            '</span></li>';
+
+        $config['next_tag_open'] =
+            '<li class="page-item">';
+
+        $config['next_tag_close'] =
+            '</li>';
+
+        $config['prev_tag_open'] =
+            '<li class="page-item">';
+
+        $config['prev_tag_close'] =
+            '</li>';
+
+        $config['first_tag_open'] =
+            '<li class="page-item">';
+
+        $config['first_tag_close'] =
+            '</li>';
+
+        $config['last_tag_open'] =
+            '<li class="page-item">';
+
+        $config['last_tag_close'] =
+            '</li>';
+
+        $config['attributes'] = [
+            'class' => 'page-link'
+        ];
+
+        $config['first_link'] = FALSE;
+
+        $config['last_link'] = FALSE;
+
+        $config['prev_link'] =
+            '<i class="fa-solid fa-chevron-left"></i>';
+
+        $config['next_link'] =
+            '<i class="fa-solid fa-chevron-right"></i>';
+
+        $this->pagination->initialize($config);
+
+        $data['pagination'] =
+            $this->pagination->create_links();
+
+        /*
+        |--------------------------------------------------------------------------
+        | AJAX Request
+        |--------------------------------------------------------------------------
+        */
+
+        if ($this->input->is_ajax_request()) {
+            $this->load->view(
+                'frontend/client/list',
+                $data
+            );
+
+            return;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Load View
+        |--------------------------------------------------------------------------
+        */
+
+        $data['content'] = 'frontend/client/index';
+
+        $data['menus'] = $this->Menu_model->getMenus();
+
+        $this->load->view('frontend/layouts/master', $data);
+    }
+}

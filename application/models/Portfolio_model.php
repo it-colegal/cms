@@ -87,6 +87,29 @@ class Portfolio_model extends CI_Model
     }
 
     /**
+     * Mengambil portfolio yang dipublikasikan dengan pagination.
+     *
+     * @param int|null $limit
+     * @param int $offset
+     * @return array
+     */
+    public function get_published($limit = null, $offset = 0)
+    {
+        $query = $this->db
+            ->select('*')
+            ->from($this->table)
+            ->where('status', 'published')
+            ->order_by('published_at', 'DESC')
+            ->order_by('id', 'DESC');
+
+        if ($limit !== null) {
+            $query->limit((int) $limit, (int) $offset);
+        }
+
+        return $query->get()->result_array();
+    }
+
+    /**
      * Menghitung jumlah portfolio yang dipublikasikan.
      *
      * @return int
