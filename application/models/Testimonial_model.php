@@ -11,27 +11,20 @@ class Testimonial_model extends CI_Model
     }
 
     /**
-     * Get published testimonials with pagination
+     * Get all testimonials with pagination
      */
     public function get_published($limit = NULL, $offset = 0)
     {
-        $query = $this->db->get_where(
-            $this->table,
-            ['status' => 'published'],
-            $limit,
-            $offset
-        );
-
+        $query = $this->db->limit($limit, $offset)->get($this->table);
         return $query->result_array();
     }
 
     /**
-     * Count published testimonials
+     * Count all testimonials
      */
     public function count_published()
     {
-        $this->db->where('status', 'published');
-        return $this->db->count_all_results($this->table);
+        return $this->db->count_all($this->table);
     }
 
     /**

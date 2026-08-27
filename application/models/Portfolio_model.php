@@ -11,27 +11,20 @@ class Portfolio_model extends CI_Model
     }
 
     /**
-     * Get published portfolio items with pagination
+     * Get all portfolio items with pagination
      */
     public function get_published($limit = NULL, $offset = 0)
     {
-        $query = $this->db->get_where(
-            $this->table,
-            ['status' => 'published'],
-            $limit,
-            $offset
-        );
-
+        $query = $this->db->limit($limit, $offset)->get($this->table);
         return $query->result_array();
     }
 
     /**
-     * Count published portfolio items
+     * Count all portfolio items
      */
     public function count_published()
     {
-        $this->db->where('status', 'published');
-        return $this->db->count_all_results($this->table);
+        return $this->db->count_all($this->table);
     }
 
     /**
