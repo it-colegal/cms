@@ -45,3 +45,8 @@ $route['client/(:any)'] = 'client/detail/$1';
 
 $route['news'] = 'news/index';
 $route['news/(:any)'] = 'news/detail/$1';
+
+// Sitemap routes
+$route['sitemap.xml'] = 'sitemap/index';
+$route['sitemap'] = 'sitemap/index';
+$route['sitemaps.xml'] = 'sitemap/sitemaps';
