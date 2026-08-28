@@ -1,3 +1,9 @@
+<IfModule mod_authz_core.c>
+    <Directory />
+        AllowOverride All
+    </Directory>
+</IfModule>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
