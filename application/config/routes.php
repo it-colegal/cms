@@ -16,9 +16,9 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['home'] = 'home/index';
 
-$route['admin'] = 'Admin/Dashboard';
-$route['admin/dashboard'] = 'Admin/Dashboard';
-$route['admin/(:any)'] = 'Admin/$1';
+$route['admin'] = 'admin/dashboard';
+$route['admin/dashboard'] = 'admin/dashboard';
+$route['admin/(:any)'] = 'admin/$1';
 
 $route['page/(:any)'] = 'page/detail/$1';
 
