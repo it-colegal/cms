@@ -9,6 +9,6 @@
 Options -Indexes
 
 # Set cache headers for static files
-<FilesMatch "\.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2|ttf|eot)$">
+<FilesMatch "\.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2|ttf|eot|txt|xml)$">
     Header set Cache-Control "max-age=2592000, public"
 </FilesMatch>
